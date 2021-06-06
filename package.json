@@ -1,21 +1,33 @@
 {
-  "name": "todo-list",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
+    "autoprefixer": "^10.2.5",
+    "axios": "^0.21.1",
+    "firebase": "^8.6.3",
+    "postcss": "^8.2.15",
+    "postcss-cli": "^8.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.6.1",
+    "react-icons": "^4.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "tailwindcss": "^2.1.2",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "json-server --watch db.json --port 3001",
+    "build:css": "postcss src/css/tailwind.css -o src/css/style.css"
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "node-sass": "^5.0.0"
   }
 }
