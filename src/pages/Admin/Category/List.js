@@ -37,7 +37,7 @@ const CategoryList = ({ Categories , onRemoveCategory}) => {
                             <td className='px-6 text-gray-900 text-sm font-medium'>{index}</td>
                             <td className='text-gray-900 text-sm font-medium capitalize'>{category.name}</td>
                             <td>
-                                <img className="h-16 w-16 my-2" src={`${API}/category/photo/${category._id}`} alt='images' />
+                                <img className="w-20 my-2" src={`${API}/category/photo/${category._id}`} alt='images' />
                             </td>
 
                             <td className='flex justify-around p-6'>

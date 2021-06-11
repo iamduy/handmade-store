@@ -1,9 +1,8 @@
 import React from "react";
 import { useHistory } from 'react-router';
-import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form'
 import { BsCloudUpload } from 'react-icons/all'
-
+import Swal from 'sweetalert2'
 const Add = ({ onAddProduct, Categories }) => {
   const history = useHistory();
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -17,12 +16,14 @@ const Add = ({ onAddProduct, Categories }) => {
     product.append('description', data.description);
     product.append('category', data.category);
     product.append('status', true);
-    const fakeProduct = {
-      ...data,
-      photo: data.photo[0],
-      status: true
-    }
-    onAddProduct(product, fakeProduct);
+    onAddProduct(product);
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Successfully',
+      showConfirmButton: false,
+      timer: 1500
+    })
     history.push('/admin/product/list');
   }
   return (
@@ -49,9 +50,9 @@ const Add = ({ onAddProduct, Categories }) => {
               </div>
               <div className='col-span-6 sm:col-span-3'>
                 <label className='block text-sm font-medium text-gray-700'>Categories</label>
-                <select className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'>
+                <select {...register('category')} className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'>
                   {Categories.map((items, index) => (
-                    <option {...register('category')} value={items._id} key={index}>
+                    <option value={items._id} key={index}>
                       {items.name}
                     </option>
                   ))}

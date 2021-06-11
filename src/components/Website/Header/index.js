@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineShoppingCart, BiUserCircle, BsSearch, HiOutlineLocationMarker, RiAdminLine, IoLogOutOutline } from "react-icons/all";
+import { AiOutlineShoppingCart, BsSearch, HiOutlineLocationMarker, RiAdminLine, IoLogOutOutline, CgProfile } from "react-icons/all";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { OnSignOut, isAuthenticated } from '../../../auth'
 
 const Header = () => {
   const history = useHistory();
   const { pathname } = useLocation();
-  const [isLogged, setIsLogged] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
   useEffect(() => {
     isAuthenticated() && setIsLogged(true);
   }, [pathname, isLogged])
 
-  const User = isAuthenticated().user;
+  const { user } = isAuthenticated();
+
   return (
     <header className="bg-white">
       <div className="container mx-auto px-6 py-3">
@@ -28,12 +29,12 @@ const Header = () => {
 
           <div className="flex text-2xl">
             <span className='pr-2 h-8 w-8 mt-2'><AiOutlineShoppingCart /></span>
-           
+
 
             {!isLogged && (
 
               <Link to='/signin'>
-                <span>Sign in</span>
+                <span className='text-sm font-light hover:text-blue-400'>Sign in</span>
               </Link>
 
             )}
@@ -42,18 +43,28 @@ const Header = () => {
               isLogged && (
                 <div className="dropdown z-50">
                   <button className='focus:outline-none'>
-                    <img src={User.avatar} alt="" className='inline-block h-8 w-8 rounded-full ring-2 ring-white' />
+                    <img src={user.avatar} alt="" className='inline-block h-8 w-8 rounded-full ring-2 ring-white' />
                   </button>
                   <div className="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
                     <div className="uppercase absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-
-                      <Link to='/admin/dashboard'>
-                        <div className="px-4 py-3 flex text-base">
-                          <RiAdminLine />
-                          <span className='ml-2 hover:text-blue-500 transition duration-300 font-medium'> Admin
+                      {user.role === 1 ?
+                        <Link to='/admin/dashboard'>
+                          <div className="px-4 py-3 flex text-base">
+                            <RiAdminLine />
+                            <span className='ml-2 hover:text-blue-500 transition duration-300 font-medium'> Admin
                         </span>
-                        </div>
-                      </Link>
+                          </div>
+                        </Link> : ''}
+
+                      <div className="py-1">
+                        <Link to='/profile'>
+                          <div className="px-4 py-3 flex text-base">
+                            <CgProfile />
+                            <span className='ml-2 hover:text-blue-500 transition duration-300 font-medium'> Profile
+                        </span>
+                          </div>
+                        </Link>
+                      </div>
 
                       <div className="py-1">
                         <button onClick={() => OnSignOut(() => {
@@ -65,7 +76,6 @@ const Header = () => {
                         </span>
                         </button>
                       </div>
-
                     </div>
                   </div>
                 </div>

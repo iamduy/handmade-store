@@ -18,6 +18,10 @@ export const OnSignIn = async (user) => {
         },
         body: JSON.stringify(user)
     }).then(response => response.json()).catch(error => console.log(error))
+
+
+    //await userAPI.signin(user).then(response => response.json()).catch(error => console.log(error))
+
 }
 
 export const authenticate = (user, next) => {

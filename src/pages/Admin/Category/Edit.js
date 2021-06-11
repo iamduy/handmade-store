@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useHistory, useParams } from 'react-router';
 import categoryAPI from '../../../api/categoryAPI';
 import { API } from '../../../config'
+import Swal from 'sweetalert2'
 const CategoryEdit = ({ onEditCategory }) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const history = useHistory();
@@ -19,30 +20,23 @@ const CategoryEdit = ({ onEditCategory }) => {
     }, []);
 
     const OnHandleSubmit = (data) => {
-        const uploads = new FormData();
+        let uploads = new FormData();
         if (data.imageNew.length === 0) {
             uploads.append('name', data.name);
-            const fakeCategory = {
-                ...data,
-                photo: data.imageOld[0]
-            }
-            console.log('data 1 :', fakeCategory);
-            onEditCategory(uploads, fakeCategory);
-            history.push('/admin/category/list');
-
+            onEditCategory(uploads, data._id);
         } else {
             uploads.append('name', data.name);
-            uploads.append('photo', data.imageNew[0])
-            const fakeCategory = {
-                ...data,
-                photo: data.imageNew[0]
-            }
-            console.log('data 2 :', fakeCategory)
-            onEditCategory(uploads, fakeCategory);
-            history.push('/admin/category/list');
-
+            uploads.append('photo', data.imageNew[0]);
+            onEditCategory(uploads, data._id);
         }
-
+        history.push('/admin/category/list');
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Successfully',
+            showConfirmButton: false,
+            timer: 1500
+        })
     }
 
     return (
@@ -84,7 +78,7 @@ const CategoryEdit = ({ onEditCategory }) => {
                                         className="focus:outline-none border-current border flex-1 block w-full sm:text-sm border-gray-300 py-2"
                                         {...register("imageNew")} />
                                 </div>
-                                <img src={`${API}/category/photo/${cate._id}`}
+                                <img src={`${API}/category/photo/${id}`}
                                     className="bg-cover bg-center w-60" alt="" />
                                 <input type="hidden" defaultValue={cate.photo} {...register("imageOld")} />
 

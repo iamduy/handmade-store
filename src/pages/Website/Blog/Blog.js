@@ -30,8 +30,7 @@ const BlogPage = ({ Blog }) => {
       <h3 className='my-4 text-justify text-gray-900 hover:text-red-400 transition duration-500 else-in-out font-normal md:text-2xl capitalize'>
         <Link to={`/blog/${blg._id}`}>{blg.title}</Link>
       </h3>
-      <p className=' text-md font-normal text-gray-500 hind my-4'>{blg.content}</p>
-
+     
       <span className='uppercase font-semibold text-xs text-gray-900 hover:text-gray-400 transition delay-150 else-in-out'>
         <Link to={`/blog/${blg._id}`}>read more</Link>
       </span>

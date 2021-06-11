@@ -22,7 +22,7 @@ const Home = ({ Blog, Categories, Products }) => {
         </div>
       </div>
     </div>
-  )).slice(0,2);
+  )).slice(0, 2);
 
   const product = Products.map((product, index) => (
     <div className='my-1 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3' key={index}>
@@ -41,11 +41,10 @@ const Home = ({ Blog, Categories, Products }) => {
         <Link to={`/blog/${items._id}`}>
           <h3 className='font-medium text-gray-600 text-lg my-2 uppercase hover:text-red-400 transition duration-300'>{items.title}</h3>
         </Link>
-        <p className='text-justify text-gray-600 text-sm'>{items.content}</p>
         <div className='mt-5'>
-          <Link to={`/blog/${items._id}`}
-            className='font-bold uppercase text-gray-900 hover:text-red-400 transition duration-300'>Read
-                More</Link>
+          <Link to={`/blog/${items._id}`}>
+            <span className='font-light text-gray-900 hover:text-red-400 transition duration-300 hover:underline'>Read More</span>
+          </Link>
         </div>
       </div>
     </div>
@@ -56,7 +55,7 @@ const Home = ({ Blog, Categories, Products }) => {
     <div className='container my-12 mx-auto px-4 md:px-12'>
 
       <div className='py-10'>
-       
+
         <p className='text-center font-light text-5xl text-black py-2 tracking-widest'>Categories</p>
       </div>
 
@@ -71,7 +70,7 @@ const Home = ({ Blog, Categories, Products }) => {
 
       <div className='flex justify-center'>
         <Link to='/shop'>
-          <span className='hover:border-gray-900 hover:bg-white border border-red-400 font-normal hover:text-gray-900 px-5 py-2 transition duration-500 ease-in-out bg-red-400 text-white uppercase hind'>
+          <span className='flex font-semibold border text-gray-200 bg-gray-900 hover:border-gray-900 py-2 px-6 focus:outline-none  my-6 capitalize transition duration-300 hover:text-gray-900 hover:bg-white '>
             more products
             </span>
         </Link>

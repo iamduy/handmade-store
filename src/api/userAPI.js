@@ -1,4 +1,4 @@
-import { API } from '../config';
+
 import { axiosClient } from './axiosClient';
 
 const userAPI = {

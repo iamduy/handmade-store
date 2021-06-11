@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import productAPI from '../../../api/productAPI'
 import categoryAPI from '../../../api/categoryAPI'
 import { Link } from 'react-router-dom'
-import {API} from '../../../config'
+import { API } from '../../../config'
 const DetailProduct = ({ Products, Categories }) => {
 
     const { id } = useParams();
@@ -18,6 +18,7 @@ const DetailProduct = ({ Products, Categories }) => {
                 const catename = cate.name;
                 const product = { ...prod, catename };
                 setDetailProduct(product);
+                window.scrollTo(0, 0);
             } catch (error) {
                 console.log(error);
             }
@@ -31,8 +32,7 @@ const DetailProduct = ({ Products, Categories }) => {
         const similar = async () => {
             try {
                 const { data: prod } = await productAPI.get(id);
-                const getSimilar = Products.map((items, index) => (
-                    items.category === prod.category &&
+                const getSimilar = Products.filter(product => product.category === prod.category).map((items, index) => (
                     <div className="w-full max-w-sm mx-auto overflow-hidden shadow-lg" key={index}>
                         <Link to={`/product/${items._id}`}>
                             <img src={`${API}/product/photo/${items._id}`} alt="" className="rounded-t" />
@@ -48,7 +48,7 @@ const DetailProduct = ({ Products, Categories }) => {
                             </Link>
                         </div>
                     </div>
-                )).slice(4, 8);
+                )).slice(0, 3);
                 SetSimilarProduct(getSimilar);
             } catch (error) {
                 console.log(error);
@@ -71,7 +71,7 @@ const DetailProduct = ({ Products, Categories }) => {
         items.feature === 1 &&
         <article key={index} className='sm:grid grid-cols-4 bg-white p-4 lg:col-span-2'>
             <Link to={`/product/${items._id}`}>
-                <img src={`${API}/product/photo/${items._id}`}  className='w-full' />
+                <img src={`${API}/product/photo/${items._id}`} className='w-full' />
             </Link>
             <div className='pt-5 self-center sm:pt-0 sm:pl-5 col-span-3'>
                 <p className='text-gray-900 hover:text-red-400 capitalize text-sm font-normal lora transition delay-150 else-in-out'>
@@ -80,37 +80,60 @@ const DetailProduct = ({ Products, Categories }) => {
                 <p className='text-gray-500 text-xs pt-1'>$ {items.price}</p>
             </div>
         </article>
-    )).slice(0, 10);
+    ));
 
 
     return (
-        <div className='bg-gray-100'>
-            <div className="container mx-auto py-6 px-20 my-10">
+        <div>
+            <div className="container mx-auto py-6 px-16 my-10">
                 <div className="md:flex no-wrap md:-mx-2">
                     <div className="xl:w-9/12 w-full mt-8 mx-4">
 
                         <section className="text-gray-700 body-font overflow-hidden">
 
                             <div className="mx-auto flex flex-wrap">
-                                <img alt="ecommerce" className="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" src={`${API}/product/photo/${detailProduct._id}`}  />
+                                <img alt="ecommerce" className="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" src={`${API}/product/photo/${id}`} />
 
-                                <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                                    <span className="text-sm title-font text-gray-500 tracking-widest uppercase">{detailProduct.catename}</span>
-                                    <h2 className="text-gray-900 text-3xl title-font lora font-medium mb-1 tracking-widest">
+                                <div className="lg:w-1/2 w-full lg:pl-6 lg:mt-0">
+
+                                    <p className="text-gray-900 text-xl title-font  font-semibold mb-1 tracking-widest border-b border-gray-400 pb-2">
                                         {detailProduct.name}
-                                    </h2>
+                                    </p>
 
-                                    <span className="text-xl title-font text-gray-700 tracking-widest">$ {detailProduct.price}</span>
+                                    <div className='grid grid-cols-1 text-sm capitalize border-b border-gray-400 pb-2 mb-2'>
+                                        <div className="grid grid-cols-3">
+                                            <div className="px-4 py-2 font-light">Brand :</div>
+                                            <span className=" py-2 font-bold">
+                                                {detailProduct.catename}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div className="px-4 py-2 font-light">Availability :</div>
+                                            <span className=" py-2 font-light">
+                                                {detailProduct.status ? 'InStock' : 'OutStock'}
+                                            </span>
+                                        </div>
 
-                                    <p className="leading-relaxed py-4 hind">{detailProduct.description}</p>
-                                    <div className="border-gray-700 border-b"></div>
-                                    <div className="flex">
-                                        <button
-                                            className="flex mr-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded my-6">
-                                            ADD TO CART
+                                        <div className="grid grid-cols-3">
+                                            <div className="px-4 py-2 font-light">Price :</div>
+                                            <span className=" py-2 font-light">
+                                                $ {detailProduct.price}
+                                            </span>
+                                        </div>
+                                    </div>
+
+
+                                    <p className="leading-relaxed font-light text-sm capitalize border-b border-gray-400 pb-2 mb-2">
+                                        <span className='font-semibold'>Description</span>  : {detailProduct.description}
+                                    </p>
+
+
+                                    <button
+                                        className="flex font-semibold border text-gray-200 bg-gray-900 hover:border-gray-900 py-2 px-6 focus:outline-none  my-6 capitalize transition duration-300 hover:text-gray-900 hover:bg-white ">
+                                        add to cart
                                     </button>
 
-                                    </div>
+
                                 </div>
                             </div>
                         </section>

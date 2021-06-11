@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { RiErrorWarningLine } from 'react-icons/all'
 import { authenticate, OnSignIn } from '../../auth'
 
@@ -9,7 +9,6 @@ const SignIn = () => {
     const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-
 
     const OnhandleSubmit = (data) => {
 
@@ -81,7 +80,11 @@ const SignIn = () => {
 
 
                             <button type="submit"
-                                className="tracking-widest hind hover:bg-white text-white font-normal text-lg border hover:border-black bg-black hover:text-black p-2 mt-8 transition duration-500">LOGIN</button>
+                                className="tracking-widest hind hover:bg-white text-white font-normal text-lg border hover:border-black bg-black hover:text-black p-2 mt-8 transition duration-500">LOGIN
+                            </button>
+                            <div className="text-center pt-12 pb-12">
+                                <p>Don't have an account? <Link to="/signup" className="font-semibold hind hover:underline hover:text-gray-600 transition duration-500">Register here.</Link></p>
+                            </div>
 
                         </form>
                     </div>

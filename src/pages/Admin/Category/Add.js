@@ -7,15 +7,10 @@ const CategoryAdd = ({ onAddCategory }) => {
     const history = useHistory();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const OnHandleSubmit = (data) => {
-        let category = new FormData();
+        const category = new FormData();
         category.append('name', data.name);
         category.append('photo', data.photo[0]);
-
-        const fakeCategory = {
-            ...data,
-            photo: data.photo[0],
-        }
-        onAddCategory(category, fakeCategory);
+        onAddCategory(category, data._id);
         history.push('/admin/category/list');
     }
     return (
