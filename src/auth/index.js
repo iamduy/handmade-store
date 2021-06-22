@@ -2,9 +2,9 @@ import { API } from '../config'
 import userAPI from '../api/userAPI'
 export const OnSignUp = async (user) => {
     return await fetch(`${API}/signup`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(user)
     }).then(response => response.json()).catch(error => console.log(error))
@@ -12,15 +12,23 @@ export const OnSignUp = async (user) => {
 }
 export const OnSignIn = async (user) => {
     return await fetch(`${API}/signin`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(user)
     }).then(response => response.json()).catch(error => console.log(error))
+}
 
-
-    //await userAPI.signin(user).then(response => response.json()).catch(error => console.log(error))
+export const OnUpdate = (user, token) => {
+    return fetch(`${API}/user/${user._id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(user)
+    }).then(response => response.json()).catch(error => console.log(error))
 
 }
 
@@ -46,7 +54,8 @@ export const isAuthenticated = () => {
 
 export const OnSignOut = async (next) => {
     if (typeof window !== 'undefined') {
-
+        localStorage.removeItem('user');
+        localStorage.removeItem('history');
         try {
             localStorage.removeItem('user');
             next();
@@ -54,8 +63,5 @@ export const OnSignOut = async (next) => {
         } catch (error) {
             console.log(error)
         }
-        // return await userAPI.signout()
-        //     .then(response => response.json())
-        //     .catch(error => console.log(error))
     }
 }

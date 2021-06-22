@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineShoppingCart, BsSearch, HiOutlineLocationMarker, RiAdminLine, IoLogOutOutline, CgProfile } from "react-icons/all";
+import { HiOutlineShoppingBag, BsSearch, HiOutlineLocationMarker, RiAdminLine, IoLogOutOutline, CgProfile } from "react-icons/all";
+import { useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { OnSignOut, isAuthenticated } from '../../../auth'
 
-const Header = () => {
+
+const Header = ({ Logout, userProfile }) => {
+
   const history = useHistory();
-  const { pathname } = useLocation();
-  const [isLogged, setIsLogged] = useState(false);
-  useEffect(() => {
-    isAuthenticated() && setIsLogged(true);
-  }, [pathname, isLogged])
-
-  const { user } = isAuthenticated();
+  const cart = useSelector(data => data.cart.data);
 
   return (
     <header className="bg-white">
@@ -27,32 +23,33 @@ const Header = () => {
           <div className="text-3xl hind tracking-widest text-blue-400">W-1914</div>
 
 
-          <div className="flex text-2xl">
-            <span className='pr-2 h-8 w-8 mt-2'><AiOutlineShoppingCart /></span>
+          <div className="flex text-3xl">
 
 
-            {!isLogged && (
 
-              <Link to='/signin'>
-                <span className='text-sm font-light hover:text-blue-400'>Sign in</span>
+            <div className="relative mr-5 mt-2">
+              <Link to='/cart'>
+                <HiOutlineShoppingBag className="text-3xl font-semibold" />
               </Link>
-
-            )}
+              <div className={cart.length >= 1 ? 'absolute -top-1 -right-2 bg-red-500 w-5 h-5  flex items-center justify-center  rounded-full' : 'hidden'}>
+                <p className='text-white text-xs font-semibold'>{cart.length}</p>
+              </div>
+            </div>
 
             {
-              isLogged && (
+              userProfile ? (
                 <div className="dropdown z-50">
                   <button className='focus:outline-none'>
-                    <img src={user.avatar} alt="" className='inline-block h-8 w-8 rounded-full ring-2 ring-white' />
+                    <img src={userProfile.avatar} alt="" className='inline-block h-8 w-8 rounded-full ring-2 ring-white' />
                   </button>
                   <div className="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
                     <div className="uppercase absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      {user.role === 1 ?
+                      {userProfile.role === 1 ?
                         <Link to='/admin/dashboard'>
                           <div className="px-4 py-3 flex text-base">
                             <RiAdminLine />
                             <span className='ml-2 hover:text-blue-500 transition duration-300 font-medium'> Admin
-                        </span>
+                            </span>
                           </div>
                         </Link> : ''}
 
@@ -61,25 +58,27 @@ const Header = () => {
                           <div className="px-4 py-3 flex text-base">
                             <CgProfile />
                             <span className='ml-2 hover:text-blue-500 transition duration-300 font-medium'> Profile
-                        </span>
+                            </span>
                           </div>
                         </Link>
                       </div>
 
                       <div className="py-1">
-                        <button onClick={() => OnSignOut(() => {
-                          history.push('/')
-                          setIsLogged(false);
-                        })} className="flex px-4 py-3 text-base uppercase">
+                        <button onClick={() => Logout(() => {
+                          history.push('/');
+                        })} className="focus:outline-none flex px-4 py-3 text-base uppercase">
                           <IoLogOutOutline />
                           <span className='ml-2 hover:text-blue-500 transition duration-300 font-medium'> Sign out
-                        </span>
+                          </span>
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
-              )
+              ) :
+                <Link to='/signin'>
+                  <span className='text-sm font-light hover:text-blue-400'>Sign in</span>
+                </Link>
             }
           </div>
 

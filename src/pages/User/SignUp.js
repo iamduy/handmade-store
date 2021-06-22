@@ -13,7 +13,7 @@ const SignUp = () => {
     const OnhandleSubmit = (data, e) => {
         const fakeUser = {
             ...data,
-            avatar: 'https://i.pinimg.com/564x/83/cb/b2/83cbb27518a6bf04f05329ce58103782.jpg'
+            avatar: 'https://i.pinimg.com/564x/22/17/06/221706b37f6eded76f599f22725f3681.jpg'
         }
 
         OnSignUp(fakeUser).then(dataInput => {

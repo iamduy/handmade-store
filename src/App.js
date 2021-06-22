@@ -1,34 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import Routers from './Routers/index';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Routers from './Routers/index'
+import Swal from 'sweetalert2'
+import { isAuthenticated, OnSignOut, OnUpdate } from './auth'
+import userAPI from './api/userAPI'
 import productAPI from './api/productAPI'
 import categoryAPI from './api/categoryAPI'
+import orderDetailAPI from './api/orderDetailAPI'
 import blogAPI from './api/blogAPI'
-import Swal from 'sweetalert2'
+import { deleteAllCart, setCart } from './actions/cartAction'
+import orderAPI, { getAll } from './api/orderAPI'
+
+
 function App() {
 
-
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]); // state product
   const [category, setCategory] = useState([]); // state category
   const [blog, setBlog] = useState([]); // state blog
-
+  const [userProfile, setProfile] = useState(''); // state user
+  const [loading, setLoading] = useState(false);
+  const [listOrder, setListOrder] = useState([]); // state Order
+  const [listOrderDetail, setOrderDetail] = useState([]);
   // state search
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
-
+  const [searchResultAdmin, setSearchResultAdmin] = useState([]);
+  const [searchResultWebsite, setSearchResultWebsite] = useState([]);
   //state pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [productPerPage] = useState(6);
 
-  // pagination
-  const indexOfLastProduct = currentPage * productPerPage; // vị trí sản phẩm cuối ở mỗi page
-  const indexOfFirstProduct = indexOfLastProduct - productPerPage; // vị trí sản phẩm đầu ở mỗi page
-  const pagination = [...products];
-  const currentProduct = pagination.slice(indexOfFirstProduct, indexOfLastProduct)
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber)
+
+
+  // save user to state
+  useEffect(() => {
+    const { user } = isAuthenticated();
+    if (user) {
+      (
+        async () => {
+          try {
+            const { data: profile } = await userAPI.get(user._id);
+            setProfile(profile);
+          } catch (error) {
+            console.log(error.response)
+          }
+        }
+      )();
+    }
+  }, [])
+
+  // login get user , save state
+  const handleSignIn = async (user) => {
+
+    if (localStorage.getItem('history') === null) {
+      localStorage.setItem('history', []);
+    }
+    try {
+      const { data: userProfile } = await userAPI.get(user._id);
+      localStorage.setItem('history', JSON.stringify(userProfile.history))
+      localStorage.setItem('cart', JSON.stringify(userProfile.history));
+      dispatch(setCart(userProfile.history));
+      setProfile(userProfile);
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
+  const cart = useSelector(data => data.cart.data);
+
+  // logout
+  const handleLogout = (next) => {
+    const userLogout = { ...userProfile, history: cart }
+    const { token } = isAuthenticated()
+    OnUpdate(userLogout, token)
+      .then(() => {
+        OnSignOut(() => {
+          next();
+        })
+        dispatch(deleteAllCart());
+        setProfile('');
+      }).catch(error => console.log(error))
   }
 
 
+
+  // pagination
+  const indexOfLastProduct = currentPage * productPerPage; // vị trí sản phẩm cuối ở mỗi page
+  const indexOfFirstProduct = indexOfLastProduct - productPerPage; // vị trí sản phẩm đầu ở mỗi page
+  const currentProduct = products.slice(indexOfFirstProduct, indexOfLastProduct)
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
 
   // search
   const OnHandleSearch = (data) => {
@@ -37,9 +98,14 @@ function App() {
       const newList = products.filter((prod) => {
         return Object.values(prod).join(' ').toLowerCase().includes(data.toLowerCase())
       })
-      setSearchResult(newList);
+      const newSearch = currentProduct.filter((prod) => {
+        return Object.values(prod).join(' ').toLowerCase().includes(data.toLowerCase())
+      })
+      setSearchResultAdmin(newList);
+      setSearchResultWebsite(newSearch);
     } else {
-      setSearchResult(products);
+      setSearchResultAdmin(products);
+      setSearchResultWebsite(products);
     }
   }
 
@@ -152,7 +218,7 @@ function App() {
           setCategory(newList);
           await categoryAPI.remove(id);
         } catch (error) {
-          console.log(error.response.data.error)
+          console.log(error.response)
         }
         Swal.fire(
           'Deleted!',
@@ -162,6 +228,7 @@ function App() {
       }
     })
   }
+
   // add category
   const handleAddCategory = async (cate) => {
     try {
@@ -184,12 +251,50 @@ function App() {
     }
   }
 
+  //loading
+  const onHandleLoading = (status) => {
+    setLoading(status)
+  }
+
+
+
+
+  // list Order
+  useEffect(() => {
+    const listOrder = async () => {
+      try {
+        const { data: order } = await orderAPI.getAll();
+        setListOrder(order);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    listOrder();
+  }, []);
+
+  useEffect(() => {
+    const listOrderDetail = async () => {
+      try {
+        const { data: OrderDetail } = await orderDetailAPI.getAll();
+        setOrderDetail(OrderDetail);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    listOrderDetail();
+  }, []);
+
 
   return (
     <Routers
-      Products={searchTerm.length < 1 ? products : searchResult}
+      Products={searchTerm.length < 1 ? products : searchResultAdmin}
       Categories={category}
       Blog={blog}
+      Signin={handleSignIn}
+      Logout={handleLogout}
+      userProfile={userProfile}
+      Order={listOrder}
+      listOrderDetail={listOrderDetail}
       onRemoveProduct={handleRemoveProduct}
       onAddProduct={handleAddProduct}
       onEditProduct={handleEditProduct}
@@ -198,10 +303,10 @@ function App() {
       onEditCategory={handleEditCategory}
       searchTerm={searchTerm}
       searchKeyWords={OnHandleSearch}
-      PaginationProduct={currentProduct}
+      PaginationProduct={searchTerm.length < 1 ? currentProduct : searchResultWebsite}
       productPerPage={productPerPage}
-      totalProduct={products.length}
       paginate={paginate}
+      handleLoading={onHandleLoading}
     />
   );
 

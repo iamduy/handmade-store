@@ -1,23 +1,22 @@
-import {axiosClient} from './axiosClient';
+import { axiosClient } from './axiosClient';
 const blogAPI = {
-    getAll(){
+    getAll() {
         const url = '/blogs';
         return axiosClient.get(url);
-
     },
-    get(id){
+    get(id) {
         const url = `/blog/${id}`;
         return axiosClient.get(url);
     },
-    add(blog){
+    add(blog) {
         const url = `/blog`;
-        return axiosClient.post(url,blog);
+        return axiosClient.post(url, blog);
     },
-    update(id,blog){
+    update(id, blog) {
         const url = `/blog/${id}`;
-        return axiosClient.put(url,blog);
+        return axiosClient.put(url, blog);
     },
-    remove(id){
+    remove(id) {
         const url = `/blog/${id}`;
         return axiosClient.delete(url);
     }

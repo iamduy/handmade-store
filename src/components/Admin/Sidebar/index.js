@@ -1,5 +1,5 @@
 import React from 'react'
-import { RiDashboardFill, BsListNested, ImAddressBook } from 'react-icons/all'
+import { RiDashboardFill, GrProductHunt, ImAddressBook, FaMicroblog, CgMenuGridR } from 'react-icons/all'
 import { Link } from 'react-router-dom'
 const Sidebar = () => {
     return (
@@ -22,7 +22,7 @@ const Sidebar = () => {
 
                 <Link to='/admin/product/list'>
                     <div className='flex text-white m-2'>
-                        <span className='mt-1 mx-3'><BsListNested /></span>
+                        <span className='mt-1 mx-3'><GrProductHunt /></span>
                         <span className='font-thin transition duration-300 hover:text-gray-400'>Products</span>
                     </div>
                 </Link>
@@ -31,6 +31,21 @@ const Sidebar = () => {
                     <div className='flex text-white m-2'>
                         <span className='mt-1 mx-3'><ImAddressBook /></span>
                         <span className='font-thin transition duration-300 hover:text-gray-400'>Category</span>
+                    </div>
+                </Link>
+
+                <Link to='/admin/blogs/list'>
+                    <div className='flex text-white m-2'>
+                        <span className='mt-1 mx-3'><FaMicroblog /></span>
+                        <span className='font-thin transition duration-300 hover:text-gray-400'>Blogs</span>
+                    </div>
+                </Link>
+
+
+                <Link to='/admin/order/list'>
+                    <div className='flex text-white m-2'>
+                        <span className='mt-1 mx-3'><CgMenuGridR /></span>
+                        <span className='font-thin transition duration-300 hover:text-gray-400'>Order</span>
                     </div>
                 </Link>
 

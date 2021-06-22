@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { IoIosAddCircleOutline, AiTwotoneDelete, FaRegEdit, BsSearch } from 'react-icons/all'
+import { IoIosAddCircleOutline, RiDeleteBin5Line, FaRegEdit, BsSearch } from 'react-icons/all'
 import { API } from '../../../config'
 const List = ({ Products, onRemoveProduct, searchTerm, searchKeyWords }) => {
     const Ref = useRef('');
@@ -8,7 +8,7 @@ const List = ({ Products, onRemoveProduct, searchTerm, searchKeyWords }) => {
         searchKeyWords(Ref.current.value);
     }
     return (
-        <div className='m-4'>
+        <div className='m-5'>
             <div className='flex justify-between'>
                 {/* search product */}
                 <div className='relative mx-4 lg:mx-0'>
@@ -20,7 +20,7 @@ const List = ({ Products, onRemoveProduct, searchTerm, searchKeyWords }) => {
                         value={searchTerm}
                         onChange={getSearchTerm}
                         type='text'
-                        className='form-input w-32 bg-gray-200 sm:w-64 pb-2 focus:outline-none pl-10 pr-4 border-b-2 border-gray-900'
+                        className='form-input w-32 bg-gray-200 sm:w-64 pb-2 focus:outline-none pl-10 pr-4 border-b-2 border-gray-600'
                         placeholder='Search' />
                 </div>
 
@@ -36,22 +36,22 @@ const List = ({ Products, onRemoveProduct, searchTerm, searchKeyWords }) => {
                     <tr>
                         <th className='px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider'>
                             #
-                    </th>
+                        </th>
                         <th className='py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider'>
                             Name
-                    </th>
+                        </th>
                         <th className=' py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider'>
                             Photos
-                    </th>
+                        </th>
                         <th className='py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider'>
                             Status
-                    </th>
+                        </th>
                         <th className=' py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider'>
                             Price
-                    </th>
+                        </th>
                         <th className='px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider'>
                             Actions
-                    </th>
+                        </th>
                     </tr>
                 </thead>
 
@@ -69,18 +69,24 @@ const List = ({ Products, onRemoveProduct, searchTerm, searchKeyWords }) => {
                                 {product.status ?
                                     <span className='bg-green-400 p-1 text-xs rounded text-white'>
                                         In Stock
-                                </span> :
+                                    </span> :
                                     <span className='bg-red-400 p-1 text-xs rounded text-white'>
                                         Out Stock
-                                </span>
+                                    </span>
                                 }
                             </td>
                             <td className='text-gray-900 text-sm font-medium'>$ {product.price}</td>
-                            <td className='flex justify-around p-6'>
-                                <button onClick={() => onRemoveProduct(product._id)}><AiTwotoneDelete /></button>
-                                <Link to={`/admin/product/edit/${product._id}`}>
-                                    <button><FaRegEdit /></button>
-                                </Link>
+                            <td className='flex m-6'>
+                                <button className='text-xl mr-4'>
+                                    <Link to={`/admin/product/edit/${product._id}`}>
+                                        <FaRegEdit />
+                                    </Link>
+                                </button>
+
+                                <button className='text-xl'
+                                    onClick={() => onRemoveProduct(product._id)}>
+                                    <RiDeleteBin5Line />
+                                </button>
                             </td>
                         </tr>
                     ))}

@@ -1,59 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IoIosArrowDown } from 'react-icons/all'
 import { API } from '../../../config'
 import _ from 'lodash'
+import { useDispatch } from 'react-redux';
+import { addCart } from '../../../actions/cartAction';
 
-const Product = ({ Products, Categories, PaginationProduct, productPerPage, totalProduct, paginate }) => {
+const Product = ({ Products, Categories, PaginationProduct, productPerPage, paginate, searchTerm, searchKeyWords }) => {
 
+
+  // search product
+  const Ref = useRef('');
+  const getSearchTerm = () => {
+    searchKeyWords(Ref.current.value);
+  }
   // pagination
   const pageNumber = [];
   for (let i = 1; i <= Math.ceil(Products.length / productPerPage); i++) {
     pageNumber.push(i);
   }
 
-  // order by
-  const [select, setSelect] = useState();
-  const selected = (e) => {
-    const getValue = e.target.value;
-    setSelect(getValue)
+  // add to cart
+  const dispatch = useDispatch();
+  const handleClick = (product) => {
+    dispatch(addCart({ ...product }));
   }
-
-  const sortLowToHight = _.orderBy(PaginationProduct, ['price'], ['asc', 'desc']).map((prod, index) => (
-    <div className='w-full max-w-sm mx-auto overflow-hidden shadow-lg' key={index}>
-      <Link to={`/product/${prod._id}`}>
-        <img src={`${API}/product/photo/${prod._id}`} alt='images' className='rounded-t' />
-      </Link>
-      <div className='p-4'>
-        <Link to={`/product/${prod._id}`}>
-          <h2 className='font-semibold text-md capitalize text-gray-700 text-center hover:text-red-400 transition duration-300'>{prod.name}</h2>
-          <p className='font-light text-gray-500 text-lg my-2 text-center'>$ {prod.price}</p>
-        </Link>
-
-        <button data-id={prod._id} className='inline-block w-full p-2 text-xs font-medium leading-6 text-center text-white uppercase transition duration-500 bg-red-400 hover:bg-white hover:border-gray-200 hover:text-gray-900 border focus:outline-none border-red-400 add-to-cart'>
-          Add to cart
-             </button>
-      </div>
-    </div>
-  ))
-
-  const sortHightToLow = _.orderBy(PaginationProduct, ['price'], ['desc', 'asc']).map((prod, index) => (
-    <div className='w-full max-w-sm mx-auto overflow-hidden shadow-lg' key={index}>
-      <Link to={`/product/${prod._id}`}>
-        <img src={`${API}/product/photo/${prod._id}`} alt='images' className='rounded-t' />
-      </Link>
-      <div className='p-4'>
-        <Link to={`/product/${prod._id}`}>
-          <h2 className='font-semibold text-md capitalize text-gray-700 text-center hover:text-red-400 transition duration-300'>{prod.name}</h2>
-          <p className='font-light text-gray-500 text-lg my-2 text-center'>$ {prod.price}</p>
-        </Link>
-
-        <button data-id={prod._id} className='inline-block w-full p-2 text-xs font-medium leading-6 text-center text-white uppercase transition duration-500 bg-red-400 hover:bg-white hover:border-gray-200 hover:text-gray-900 border focus:outline-none border-red-400 add-to-cart'>
-          Add to cart
-             </button>
-      </div>
-    </div>
-  ))
 
   const feature = Products.map((items, index) => (
     items.feature === 1 &&
@@ -78,9 +49,26 @@ const Product = ({ Products, Categories, PaginationProduct, productPerPage, tota
     </ul>
   ))
 
+  const products = PaginationProduct.map((prod, index) => (
+    <div className='w-full max-w-sm mx-auto overflow-hidden shadow-lg' key={index}>
+      <Link to={`/product/${prod._id}`}>
+        <img src={`${API}/product/photo/${prod._id}`} alt='images' className='rounded-t' />
+      </Link>
+      <div className='p-4'>
+        <Link to={`/product/${prod._id}`}>
+          <h2 className='font-semibold text-md capitalize text-gray-700 text-center hover:text-red-400 transition duration-300'>{prod.name}</h2>
+          <p className='font-light text-gray-500 text-lg my-2 text-center'>$ {prod.price}</p>
+        </Link>
+
+        <button onClick={() => handleClick(prod)} className='flex font-semibold border text-gray-200 bg-gray-900 hover:border-gray-900 py-2 px-6 focus:outline-none  my-6 capitalize transition duration-300 hover:text-gray-900 hover:bg-white w-full justify-center'>
+          Add to cart
+        </button>
+      </div>
+    </div>
+  ))
+
   return (
     <div className='bg-gray-50'>
-
       {/* head-line */}
       <div className='h-40' style={{ backgroundColor: '#F8EFEA' }}>
         <div className='h-24 min-h-full flex items-center justify-center'>
@@ -89,7 +77,7 @@ const Product = ({ Products, Categories, PaginationProduct, productPerPage, tota
             <span className='font-bold text-gray-400 text-xs hover:text-black transition duration-300 else-in-out'>
               <Link to='/'>
                 HOME
-                </Link>
+              </Link>
             </span>
             <span className='font-bold text-gray-400 text-xs'> / SHOP</span>
           </div>
@@ -98,53 +86,30 @@ const Product = ({ Products, Categories, PaginationProduct, productPerPage, tota
 
       <div className='container mx-auto py-6 px-20'>
 
-
-        <div className="flex mx-2">
-          <span className='pt-1 text-lg font-light'>Sort By : </span>
-          <div className='relative mx-4 inline-flex'>
-            <span className='w-2 h-2 absolute top-0 right-0 m-3 pointer-events-none'>
-              <IoIosArrowDown />
-            </span>
-            <select onChange={selected}
-              className='border border-gray-300 text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none hind font-light text-sm'>
-              <option value='default'>Default</option>
-              <option value='low_to_hight'>Price (Low &gt; High)</option>
-              <option value='hight_to_low'>Price (High &gt; Low)</option>
-            </select>
-          </div>
-        </div>
-
-
-
-
         <main className='md:flex no-wrap md:-mx-2'>
           <div className='xl:w-9/12 w-full mt-8 mx-4'>
 
             <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'>
-              {select === undefined && sortHightToLow}
-              {select === 'default' && sortHightToLow}
-              {select === 'hight_to_low' && sortHightToLow}
-              {select === 'low_to_hight' && sortLowToHight}
+              {products}
             </div>
 
             <ul className='flex my-8'>
-              <li className="mx-1 px-3 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-pointer">
-                <span className="mx-1 flex items-center font-bold">previous</span>
-              </li>
               {pageNumber.map((items) => (
                 <button key={items} onClick={() => paginate(items)} className='font-bold focus:outline-none rounded-lg focus:bg-gray-700 mx-1 px-3 py-2 bg-gray-200 text-gray-700 focus:text-gray-200'>
                   {items}
                 </button>
               ))}
-              <li className="mx-1 px-3 py-2 bg-gray-200 text-gray-700 hover:bg-gray-700 hover:text-gray-200 rounded-lg cursor-pointer">
-                <span className="mx-1 flex items-center font-bold">Next</span>
-              </li>
             </ul>
-
           </div>
           <div className='xl:w-3/12 w-full mt-8 mx-4'>
             <form className='mb-2'>
-              <input className='p-2 w-full text-gray-800 border border-gray-200 focus:outline-none mb-2' type='text' id='search' placeholder=' Search products' />
+              <input
+                ref={Ref}
+                value={searchTerm}
+                onChange={getSearchTerm}
+                className='p-2 w-full text-gray-800 border border-gray-200 focus:outline-none mb-2'
+                type='text'
+                placeholder=' Search products' />
               <button type='submit' className='inline-block w-full p-2 text-xs font-medium leading-6 text-center text-white uppercase transition duration-500 bg-red-400 hover:bg-white hover:border-gray-200 hover:text-gray-900 border focus:outline-none border-red-400'>
                 search
               </button>

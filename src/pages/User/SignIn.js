@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { RiErrorWarningLine } from 'react-icons/all'
 import { authenticate, OnSignIn } from '../../auth'
 
-const SignIn = () => {
+const SignIn = ({ Signin }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const history = useHistory();
     const [loading, setLoading] = useState(false);
@@ -18,8 +18,10 @@ const SignIn = () => {
                 setError(dataUser.error)
                 setLoading(false);
             } else {
+                Signin(dataUser.user);
                 authenticate(dataUser, () => {
                     history.push('/');
+                    window.scrollTo(0,0);
                 });
             }
         })
@@ -51,7 +53,7 @@ const SignIn = () => {
 
                             <div className="flex flex-col pt-4">
                                 <label htmlFor="email" className="text-lg hind font-normal">Email
-                                <span className="text-red-600 font-bold">*</span>
+                                    <span className="text-red-600 font-bold">*</span>
                                 </label>
                                 <div className="relative">
                                     <input
@@ -66,7 +68,7 @@ const SignIn = () => {
                             <div className="flex flex-col pt-4">
                                 <label htmlFor="password" className="text-lg hind font-normal">
                                     Password
-                                <span className="text-red-600 font-bold">*</span>
+                                    <span className="text-red-600 font-bold">*</span>
                                 </label>
                                 <div className="relative">
                                     <input

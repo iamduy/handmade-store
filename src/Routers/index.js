@@ -12,9 +12,12 @@ import Home from '../pages/Website/HomePage/Home.js';
 import BlogPage from '../pages/Website/Blog/Blog.js';
 import ProductPage from '../pages/Website/Products/ProductPage.js';
 import DetailProduct from '../pages/Website/Products/DetailProduct.js';
+import DetailBlog from '../pages/Website/Blog/DetailBog.js';
 import AboutPage from '../pages/Website/About/About.js';
 import ContactPage from '../pages/Website/Contact/Contact.js';
 import Category from '../pages/Website/Products/Category.js';
+import Cart from '../pages/Website/Cart'
+import Order from '../pages/Website/Order/index';
 //router admin
 import Dashboard from '../pages/Admin/Dashboard/dashboard.js';
 import ProductList from '../pages/Admin/Products/List'
@@ -23,7 +26,10 @@ import ProductEdit from '../pages/Admin/Products/Edit.js';
 import CategoryList from '../pages/Admin/Category/List.js';
 import CategoryAdd from '../pages/Admin/Category/Add.js';
 import CategoryEdit from '../pages/Admin/Category/Edit.js';
-import DetailBlog from '../pages/Website/Blog/DetailBog.js';
+import BlogList from '../pages/Admin/Blogs/List'
+import OrderList from '../pages/Admin/Order/OrderList.js';
+import OrderDetail from '../pages/Admin/Order/OrderDetail.js';
+
 
 const Routers = (props) => {
   return (
@@ -31,7 +37,7 @@ const Routers = (props) => {
       <Switch>
         {/* Layout Admin */}
         <Route path='/admin/:path?/:path?/:path?'>
-          <LayoutAdmin>
+          <LayoutAdmin {...props}>
             <Switch>
               <Route exact path='/admin/dashboard'>
                 <Dashboard {...props} />
@@ -56,13 +62,25 @@ const Routers = (props) => {
               <Route exact path='/admin/category/edit/:id?'>
                 <CategoryEdit {...props} />
               </Route>
+              {/* Blogs */}
+              <Route exact path='/admin/blogs/list'>
+                <BlogList {...props} />
+              </Route>
+              {/* Order */}
+              <Route exact path='/admin/order/list'>
+                <OrderList {...props} />
+              </Route>
+              <Route exact path='/admin/orderdetail/:id?'>
+                <OrderDetail {...props} />
+              </Route>
+
             </Switch>
           </LayoutAdmin>
         </Route>
 
         {/* Layout Website */}
         <Route>
-          <LayoutWebsite>
+          <LayoutWebsite {...props}>
             <Switch>
               <Route exact path='/'>
                 <Home {...props} />
@@ -99,10 +117,15 @@ const Routers = (props) => {
                 <Profile {...props} />
               </Route>
 
+              <Route exact path='/cart'>
+                <Cart />
+              </Route>
+              <Route exact path='/checkout'>
+                <Order {...props} />
+              </Route>
+
               <Route path='*'>
-                <Error404>
-                  Error 404
-                </Error404>
+                <Error404 />
               </Route>
             </Switch>
           </LayoutWebsite>

@@ -3,7 +3,6 @@
   -webkit-animation: spinner 1.5s linear infinite;
   animation: spinner 1.5s linear infinite;
 }
-
 @-webkit-keyframes spinner {
   0% {
     -webkit-transform: rotate(0deg);
@@ -12,7 +11,6 @@
     -webkit-transform: rotate(360deg);
   }
 }
-
 @keyframes spinner {
   0% {
     transform: rotate(0deg);
@@ -26,4 +24,16 @@
   opacity:1;
   transform: translate(0) scale(1);
   visibility: visible;
+}
+
+.slick-arrow{
+  border : 1px solid black !important;
+  height: 30px;
+  width: 30px;
+  border-radius: 100px;
+
+}
+.slick-prev::before , .slick-next::before {
+  font-family: monospace !important;
+  color: black !important;
 }

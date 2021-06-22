@@ -1,20 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import categoryAPI from '../../../api/categoryAPI'
 import { useParams } from 'react-router-dom';
 import { API } from '../../../config'
 import { IoIosArrowDown } from 'react-icons/all'
 import _ from 'lodash'
-const Category = ({ Products, Categories }) => {
+import { useDispatch } from 'react-redux';
+import { addCart } from '../../../actions/cartAction';
+
+const Category = ({ Products, Categories, searchTerm, searchKeyWords }) => {
 
     const { id } = useParams();
     const [category, setCategory] = useState([]);
+
+    // search product
+    const Ref = useRef('');
+    const getSearchTerm = () => {
+        searchKeyWords(Ref.current.value);
+    }
+
+
     const [select, setSelect] = useState();
     const selected = (e) => {
         const getValue = e.target.value;
         setSelect(getValue)
     }
 
+    // call api
     useEffect(() => {
         const getCategory = async () => {
             try {
@@ -28,10 +40,17 @@ const Category = ({ Products, Categories }) => {
     }, [id]);
 
 
+
+    // add to cart
+    const dispatch = useDispatch();
+    const handleClick = (product) => {
+        dispatch(addCart({ ...product }))
+    }
+
     const sortLowToHight = _.orderBy(Products, ['price'], ['asc', 'desc']).filter(items => items.category === category._id).map((prod, index) => (
         <div className='w-full max-w-sm mx-auto overflow-hidden shadow-lg' key={index}>
             <Link to={`/product/${prod._id}`}>
-                <img src={`${API}/product/photo/${prod._id}`} alt='' className='rounded-t' />
+                <img src={`${API}/product/photo/${prod._id}`} alt='images' className='rounded-t' />
             </Link>
             <div className='p-4'>
                 <Link to={`/product/${prod._id}`}>
@@ -39,9 +58,9 @@ const Category = ({ Products, Categories }) => {
                     <p className='font-light text-gray-500 text-lg my-2 text-center'>$ {prod.price}</p>
                 </Link>
 
-                <button data-id={prod._id} className='inline-block w-full p-2 text-xs font-medium leading-6 text-center text-white uppercase transition duration-500 bg-red-400 hover:bg-white hover:border-gray-200 hover:text-gray-900 border focus:outline-none border-red-400 add-to-cart'>
+                <button onClick={() => handleClick(prod)} className='flex font-semibold border text-gray-200 bg-gray-900 hover:border-gray-900 py-2 px-6 focus:outline-none  my-6 capitalize transition duration-300 hover:text-gray-900 hover:bg-white w-full justify-center'>
                     Add to cart
-             </button>
+                </button>
             </div>
         </div>
     ))
@@ -49,7 +68,7 @@ const Category = ({ Products, Categories }) => {
     const sortHightToLow = _.orderBy(Products, ['price'], ['desc', 'asc']).filter(items => items.category === category._id).map((prod, index) => (
         <div className='w-full max-w-sm mx-auto overflow-hidden shadow-lg' key={index}>
             <Link to={`/product/${prod._id}`}>
-                <img src={`${API}/product/photo/${prod._id}`} alt='' className='rounded-t' />
+                <img src={`${API}/product/photo/${prod._id}`} alt='images' className='rounded-t' />
             </Link>
             <div className='p-4'>
                 <Link to={`/product/${prod._id}`}>
@@ -57,12 +76,15 @@ const Category = ({ Products, Categories }) => {
                     <p className='font-light text-gray-500 text-lg my-2 text-center'>$ {prod.price}</p>
                 </Link>
 
-                <button data-id={prod._id} className='inline-block w-full p-2 text-xs font-medium leading-6 text-center text-white uppercase transition duration-500 bg-red-400 hover:bg-white hover:border-gray-200 hover:text-gray-900 border focus:outline-none border-red-400 add-to-cart'>
+                <button onClick={() => handleClick(prod)} className='flex font-semibold border text-gray-200 bg-gray-900 hover:border-gray-900 py-2 px-6 focus:outline-none  my-6 capitalize transition duration-300 hover:text-gray-900 hover:bg-white w-full justify-center'>
                     Add to cart
-             </button>
+                </button>
             </div>
         </div>
     ))
+
+
+
 
     const feature = Products.map((items, index) => (
         items.feature === 1 &&
@@ -107,16 +129,21 @@ const Category = ({ Products, Categories }) => {
 
             <div className='container mx-auto py-6 px-20'>
 
-                <div className='relative mx-4 inline-flex'>
-                    <span className='w-2 h-2 absolute top-0 right-0 m-3 pointer-events-none'>
-                        <IoIosArrowDown />
-                    </span>
-                    <select onChange={selected}
-                        className='border border-gray-300 text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none hind font-semibold'>
-                        <option value='hight_to_low'>Hight to Low</option>
-                        <option value='low_to_hight'>Low to Hight</option>
-                    </select>
+                <div className="flex mx-2">
+                    <span className='pt-1 text-lg font-light'>Sort By : </span>
+                    <div className='relative mx-4 inline-flex'>
+                        <span className='w-2 h-2 absolute top-0 right-0 m-3 pointer-events-none'>
+                            <IoIosArrowDown />
+                        </span>
+                        <select onChange={selected}
+                            className='border border-gray-300 text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none hind font-light text-sm'>
+                            <option value='low_to_hight'>Price (Low &gt; High)</option>
+                            <option value='hight_to_low'>Price (High &gt; Low)</option>
+                        </select>
+                    </div>
                 </div>
+
+
 
                 <main className='md:flex no-wrap md:-mx-2'>
                     <div className='xl:w-9/12 w-full mt-8 mx-4'>
@@ -125,11 +152,18 @@ const Category = ({ Products, Categories }) => {
                             {select === 'hight_to_low' && sortHightToLow}
                             {select === 'low_to_hight' && sortLowToHight}
                         </div>
+
                     </div>
                     <div className='xl:w-3/12 w-full mt-8 mx-4'>
 
                         <form className='mb-2'>
-                            <input className='p-2 w-full text-gray-800 border border-gray-200 focus:outline-none mb-2' type='text' id='search' placeholder=' Search products' />
+                            <input
+                                ref={Ref}
+                                value={searchTerm}
+                                onChange={getSearchTerm}
+                                className='p-2 w-full text-gray-800 border border-gray-200 focus:outline-none mb-2'
+                                type='text'
+                                placeholder=' Search products' />
                             <button type='submit' className='inline-block w-full p-2 text-xs font-medium leading-6 text-center text-white uppercase transition duration-500 bg-red-400 hover:bg-white hover:border-gray-200 hover:text-gray-900 border focus:outline-none border-red-400'>
                                 search
                             </button>
