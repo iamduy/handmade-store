@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from 'react-router';
 import { useForm } from 'react-hook-form'
 import { BsCloudUpload } from 'react-icons/all'
-
+import Swal from 'sweetalert2'
 const CategoryAdd = ({ onAddCategory }) => {
     const history = useHistory();
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -11,6 +11,13 @@ const CategoryAdd = ({ onAddCategory }) => {
         category.append('name', data.name);
         category.append('photo', data.photo[0]);
         onAddCategory(category, data._id);
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Successfully',
+            showConfirmButton: false,
+            timer: 1500
+        })
         history.push('/admin/category/list');
     }
     return (
@@ -23,7 +30,7 @@ const CategoryAdd = ({ onAddCategory }) => {
                         <div className='col-span-6 sm:col-span-3'>
                             <label className='block text-sm font-medium text-gray-700'>
                                 Name Products
-                        </label>
+                            </label>
                             <div className='mt-1'>
                                 <input type='text' className={`focus:outline-none border-current border flex-1 block w-full
                                 sm:text-sm border-gray-300 py-2 ${errors.name ? 'border-red-600' : ''}`}
@@ -53,7 +60,7 @@ const CategoryAdd = ({ onAddCategory }) => {
                                         </div>
                                         <p className='text-xs text-gray-500'>
                                             PNG, JPG, GIF up to 10MB
-                                    </p>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +69,7 @@ const CategoryAdd = ({ onAddCategory }) => {
                         <button type='submit'
                             className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
                             Send
-                    </button>
+                        </button>
 
                     </div>
                 </div>

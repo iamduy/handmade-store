@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { IoIosArrowDown } from 'react-icons/all'
 import { API } from '../../../config'
 import _ from 'lodash'
 import { useDispatch } from 'react-redux';
